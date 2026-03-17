@@ -1,61 +1,80 @@
-# 😊 人脸情绪识别系统
+# 自动驾驶场景视觉问答系统（autonomous-driving-vqa）
 
-## 项目介绍
+基于 CLIP + MLP 分类器，在 nuScenes mini 数据集上训练的自动驾驶场景视觉问答（VQA）系统。
 
-使用深度学习识别人脸照片中的情绪表情。上传一张人脸照片，自动输出情绪类别和概率。
+## 实验结果
 
-## 支持的情绪（7种）
-
-| 情绪 | 英文 |
+| 指标 | 数值 |
 |------|------|
-| 😊 开心 | Happy |
-| 😢 难过 | Sad |
-| 😠 生气 | Angry |
-| 😐 平静 | Neutral |
-| 😨 害怕 | Fear |
-| 🤢 厌恶 | Disgust |
-| 😲 惊讶 | Surprise |
+| 最佳验证准确率 | **95.8%** |
+| 训练轮数 | 20 epochs |
+| 数据集 | nuScenes mini（404张图，6464条问答） |
+| 答案类别数 | 7 |
 
-## 技术栈
+## Demo 演示
 
-- **模型**：ResNet18（ImageNet 预训练 + 微调）
-- **框架**：PyTorch 2.5
-- **数据集**：FER2013（约28000张训练，7000张验证）
-- **界面**：Gradio
-- **加速**：CUDA（GPU）
-
-## 训练效果
-
-- 最佳验证准确率：62.51%
-- 训练轮数：10 Epoch
-- FER2013 人类标注准确率约 65%，模型表现接近人类水平
-
-## 安装
-
-```bash
-conda activate multimodal
-pip install torch torchvision gradio
-```
-
-## 使用
+![demo](assets/demo.png)
 
 ```bash
 python app.py
+# 浏览器打开 http://127.0.0.1:7860
 ```
 
-浏览器自动打开，上传人脸照片即可识别。
+> **注意：问题必须用英文输入**，例如 `How many cars are there?`
+> 原因：CLIP 文本编码器基于英文预训练，中文输入会导致特征质量下降。
 
-## 项目结构
+## 支持的问题类型
+
+模型支持对以下 8 类目标进行问答：
+
+| 目标类别 | 问题类型 | 示例 |
+|----------|----------|------|
+| car, truck, bus, motorcycle, bicycle | 计数 | `How many cars are there?` |
+| pedestrian, traffic cone, barrier | 存在性 | `Is there a pedestrian in the scene?` |
+
+**答案词表：** `0`, `1`, `2`, `3`, `more than 3`, `yes`, `no`
+
+## 模型结构
 
 ```
-├── train.ipynb         # 训练代码
-├── predict.ipynb       # 测试代码
-├── app.py              # 网页应用
-├── emotion_model.pth   # 训练好的模型
-├── README.md           # 项目说明
-└── data/emotion/       # 数据集
+CLIP ViT-B/32（冻结，不参与训练）
+    ├── 图像编码器 → 512维
+    └── 文本编码器 → 512维
+              ↓ 拼接 → 1024维
+         MLP 分类头
+         1024 → 512 → 256 → 7
 ```
 
-## 作者
+- 主干网络：`openai/clip-vit-base-patch32`（权重冻结）
+- 只训练 MLP 分类头
+- 优化器：Adam，lr=1e-3
+- 损失函数：CrossEntropyLoss
 
-[gterryd]
+## 数据集
+
+- **图片来源**：nuScenes mini，10个驾驶场景，404张前置摄像头关键帧
+- **问答生成**：基于 `sample_annotation.json` 真实3D标注自动生成
+- **数据划分**：80% 训练（5168条）/ 20% 验证（1296条）
+
+## 环境配置
+
+```bash
+conda create -n multimodal python=3.10
+conda activate multimodal
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+pip install transformers gradio pillow tqdm
+```
+
+下载 [nuScenes mini](https://www.nuscenes.org/nuscenes)，解压到 `data/nuscenes/v1.0-mini/`。
+
+## 训练
+
+```bash
+python prepare_data_v2.py   # 从标注生成问答对
+python train.py             # 训练20轮（RTX 4060约40分钟）
+```
+
+## 运行环境
+
+- Python 3.10，PyTorch 2.6.0+cu124，transformers 5.0.0
+- NVIDIA RTX 4060 Laptop GPU（8GB显存）

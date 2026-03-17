@@ -1,8 +1,16 @@
+# 数据集（太大，不上传）
 data/
-*.pth
-__pycache__/
-.ipynb_checkpoints/
+
+# 模型缓存
 .gradio/
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# 学习笔记（和这个项目无关）
 01-foundations/
 02-core-multimodal/
 03-advanced/
@@ -10,13 +18,23 @@ __pycache__/
 05-interview-prep/
 06-code-templates/
 tools/
-test_gradio.py
-项目0-第1周-准备和训练.md
-项目0-第2周-做网页.md
-项目1-图像分类系统.md
-项目2-图文检索简化版.md
-每日打卡-项目版.md
+emotion-recognition/
+NuScenes-QA/
+
+# 其他md文件（学习计划、面试备战等）
 如何运行代码-新手指南.md
+对话记录-续接用.txt
 常见错误解决.md
 常见问题FAQ.md
 快速参考-PyTorch核心.md
+每日打卡.md
+面试备战-腾讯CV岗.md
+项目0-第1周-准备和训练.md
+项目0-第2周-演示页.md
+项目1-自动驾驶场景问答.md
+项目2-电力设备智能巡检.md
+项目3-多模态RAG问答系统.md
+README.md
+
+# 旧模型（方案A，不用了）
+driving_vqa_best.pth
