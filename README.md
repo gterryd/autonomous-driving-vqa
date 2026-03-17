@@ -11,19 +11,21 @@
 | 数据集 | nuScenes mini（404张图，6464条问答） |
 | 答案类别数 | 7 |
 
-## Demo 演示
+## 文件结构
 
-![demo](assets/demo.png)
-
-```bash
-python app.py
-# 浏览器打开 http://127.0.0.1:7860
+```
+autonomous-driving-vqa/
+├── app.py               # Gradio Demo
+├── train.py             # 训练脚本
+├── prepare_data_v2.py   # 数据预处理（生成QA对）
+└── README.md
 ```
 
-> **注意：问题必须用英文输入**，例如 `How many cars are there?`
-> 原因：CLIP 文本编码器基于英文预训练，中文输入会导致特征质量下降。
+> 数据集和模型权重不包含在仓库中，需自行下载/训练（见下方说明）。
 
 ## 支持的问题类型
+
+> 问题必须用英文输入，例如 `How many cars are there?`（CLIP 文本编码器基于英文预训练）
 
 模型支持对以下 8 类目标进行问答：
 
