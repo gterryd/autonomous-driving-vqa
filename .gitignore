@@ -36,5 +36,5 @@ NuScenes-QA/
 项目3-多模态RAG问答系统.md
 README.md
 
-# 旧模型（方案A，不用了）
-driving_vqa_best.pth
+# 模型权重（文件太大，不上传）
+*.pth
