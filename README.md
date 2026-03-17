@@ -69,9 +69,11 @@ pip install transformers gradio pillow tqdm
 
 ## 训练
 
+模型权重文件（`driving_vqa_v2_best.pth`，约580MB）未包含在仓库中，需自行训练生成：
+
 ```bash
 python prepare_data_v2.py   # 从标注生成问答对
-python train.py             # 训练20轮（RTX 4060约40分钟）
+python train.py             # 训练20轮（RTX 4060约40分钟），自动保存最佳权重
 ```
 
 ## 运行环境
